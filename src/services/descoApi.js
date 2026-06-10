@@ -34,8 +34,9 @@ export async function fetchBalance() {
       meterNo: METER_NO,
       accountNo: payload?.accountNo ?? payload?.account_no ?? payload?.customerNo ?? '',
       customerName: payload?.customerName ?? payload?.customer_name ?? payload?.name ?? '',
+      currentMonthConsumption: parseFloat(payload?.currentMonthConsumption ?? payload?.current_month_consumption ?? 0),
       unit: payload?.unit ?? payload?.energyUnit ?? 'BDT',
-      fetchedAt: new Date(),
+      readingTime: parseReadingTime(payload?.readingTime ?? payload?.reading_time),
     };
   } catch (err) {
     clearTimeout(timeoutId);
@@ -48,6 +49,15 @@ export async function fetchBalance() {
     }
     throw err;
   }
+}
+
+function parseReadingTime(value) {
+  if (!value) return null;
+
+  const normalized = String(value).includes('T') ? String(value) : String(value).replace(' ', 'T');
+  const parsed = new Date(normalized);
+
+  return isNaN(parsed.getTime()) ? null : parsed;
 }
 
 function extractBalance(payload) {

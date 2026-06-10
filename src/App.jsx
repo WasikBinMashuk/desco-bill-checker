@@ -21,7 +21,7 @@ function useTheme() {
 
 export default function App() {
   const { theme, toggle } = useTheme();
-  const { balanceData, loading, error, countdown, isRefreshing, refresh } = useBalance();
+  const { balanceData, loading, error, isRefreshing, refresh } = useBalance();
 
   return (
     <div className="app">
@@ -32,7 +32,6 @@ export default function App() {
           balanceData={balanceData}
           loading={loading}
           error={error}
-          countdown={countdown}
           isRefreshing={isRefreshing}
           onRefresh={refresh}
         />
@@ -40,7 +39,7 @@ export default function App() {
 
       <footer className="footer">
         <p>Data source: DESCO Prepaid Meter API</p>
-        <p className="footer-note">Auto-refreshes every 5 minutes &mdash; meter <strong>661120018636</strong></p>
+        <p className="footer-note">Manual refresh only &mdash; meter <strong>661120018636</strong></p>
       </footer>
     </div>
   );

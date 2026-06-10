@@ -11,20 +11,20 @@ function getBalanceStatus(balance) {
 
 function formatTime(date) {
   if (!date) return '—';
-  return date.toLocaleTimeString('en-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-}
-
-function formatCountdown(seconds) {
-  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const s = (seconds % 60).toString().padStart(2, '0');
-  return `${m}:${s}`;
+  return date.toLocaleString('en-BD', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 }
 
 export default function BalanceCard({
   balanceData,
   loading,
   error,
-  countdown,
   isRefreshing,
   onRefresh,
 }) {
@@ -90,6 +90,23 @@ export default function BalanceCard({
               {balanceData.customerName && (
                 <p className="customer-name">{balanceData.customerName}</p>
               )}
+
+              <div className="consumption-pill" aria-label={`Current month consumption: ${balanceData.currentMonthConsumption} kWh`}>
+                <div className="consumption-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
+                </div>
+                <div className="consumption-info">
+                  <span className="consumption-label">Current month consumption</span>
+                  <span className="consumption-value">
+                    {Number.isFinite(balanceData.currentMonthConsumption)
+                      ? balanceData.currentMonthConsumption.toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                      : '—'}
+                    <span className="consumption-unit"> kWh</span>
+                  </span>
+                </div>
+              </div>
             </>
           ) : null}
         </div>
@@ -102,14 +119,7 @@ export default function BalanceCard({
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                 </svg>
-                Updated: {formatTime(balanceData.fetchedAt)}
-              </span>
-              <span className="timestamp-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-                </svg>
-                Next refresh: {formatCountdown(countdown)}
+                Last updated: {formatTime(balanceData.readingTime)}
               </span>
             </div>
 
